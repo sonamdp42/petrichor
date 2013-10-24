@@ -58,7 +58,7 @@ static int free_lru_node(struct lru_list **node)
 }
 
 /* Insert node to Front of LRU Cache */
-struct lru_list * insert_new_lru_node(struct lru_cache *cache, uint64_t addr, void *data, size_t size)
+static struct lru_list * insert_new_lru_node(struct lru_cache *cache, uint64_t addr, void *data, size_t size)
 {
 	int ret = 0;
 	struct lru_list *node = NULL, *tmp = NULL;
@@ -93,7 +93,7 @@ out:
 }
 
 /* Move existing node to Front of LRU Cache */
-int move_lru_node(struct lru_cache *cache, struct lru_list **node)
+static int move_lru_node(struct lru_cache *cache, struct lru_list **node)
 {
 	int ret = 0;
 	struct lru_list *tmp = NULL, *tmp2 = NULL;
@@ -129,7 +129,7 @@ out:
 }
 
 /* We always delete the last element in LRU Cache */
-uint64_t delete_lru_node(struct lru_cache *cache)
+static uint64_t delete_lru_node(struct lru_cache *cache)
 {
 	int ret = 0;
 	uint64_t addr = 0;
@@ -185,7 +185,7 @@ out:
 		return addr;
 }
 
-int destroy_lru_queue(struct lru_cache *cache)
+static int destroy_lru_queue(struct lru_cache *cache)
 {
 	int ret = 0;
 
@@ -223,7 +223,9 @@ int iterate_lru_list(struct lru_cache *cache)
 	} while (itr && tail != itr);
 
 	if (itr && itr->data)
-		printf("\n\nFor debugging: data at head node: %s, address: %" PRIu64 "\n\n", (char *)itr->data, itr->address);
+		printf("\n\nFor debugging: data at head node: %s, address: %"
+				PRIu64 "\n\n", (char *)itr->data,
+				itr->address);
 
 	return 0;
 }
@@ -264,7 +266,7 @@ static void free_lru_hash_node(struct lru_hash **entry)
 }
 
 /* This will overwrite existing entry, or create new entry. */
-int insert_lru_hash_node(struct lru_cache *cache, struct lru_list *node)
+static int insert_lru_hash_node(struct lru_cache *cache, struct lru_list *node)
 {
 	int ret = 0;
 	uint32_t index, ht_index;
@@ -282,7 +284,8 @@ int insert_lru_hash_node(struct lru_cache *cache, struct lru_list *node)
 
 	/* Nothing ever entered for this index! */
 	if (!entry) {
-		cache->hashtable[ht_index] = create_lru_hash_node(hashbuf, SHA_DIGEST_LENGTH, node);
+		cache->hashtable[ht_index] = create_lru_hash_node(hashbuf,
+				SHA_DIGEST_LENGTH, node);
 		if (!cache->hashtable[ht_index]) {
 			fprintf(stderr, "Error in creating initial entry for index %u", ht_index);
 			ret = -1;
@@ -315,7 +318,7 @@ out:
 	return ret;
 }
 
-struct lru_list *lookup_lru_hash_node(struct lru_cache *cache, uint64_t addr)
+static struct lru_list *lookup_lru_hash_node(struct lru_cache *cache, uint64_t addr)
 {
 	int found = 0;
 	uint32_t index, ht_index;
@@ -350,7 +353,7 @@ out:
 	return node;
 }
 
-int delete_lru_hash_node(struct lru_cache *cache, uint64_t addr)
+static int delete_lru_hash_node(struct lru_cache *cache, uint64_t addr)
 {
 	int ret = 0;
 	uint32_t index, ht_index;
@@ -397,7 +400,7 @@ out:
 	return ret;
 }
 
-int destroy_lru_hashtable(struct lru_cache *cache)
+static int destroy_lru_hashtable(struct lru_cache *cache)
 {
 	int ret = 0, i;
 	struct lru_hash *itr = NULL, *tmp = NULL;
@@ -492,7 +495,8 @@ struct lru_cache * lru_cache_initialize(int max_queue_size, int max_ht_buckets)
 {
 	struct lru_cache *cache = NULL;
 
-	assert(max_queue_size > 0 && max_ht_buckets > 0 && max_queue_size <= MAX_CACHE_SIZE && max_ht_buckets <= HT_MAX_BUCKETS);
+	assert(max_queue_size > 0 && max_ht_buckets > 0 && max_queue_size <=
+			MAX_CACHE_SIZE && max_ht_buckets <= HT_MAX_BUCKETS);
 
 	cache = (struct lru_cache *) malloc(sizeof(struct lru_cache));
 	if (!cache) {
@@ -502,7 +506,8 @@ struct lru_cache * lru_cache_initialize(int max_queue_size, int max_ht_buckets)
 
 	cache->max_elements = max_queue_size;
 
-	cache->hashtable = (struct lru_hash **) malloc(sizeof(struct lru_hash *) * max_ht_buckets);
+	cache->hashtable = (struct lru_hash **) malloc(sizeof(struct lru_hash
+				*) * max_ht_buckets);
 	if (!cache->hashtable) {
 		fprintf(stderr, "Failed to allocate hashtable.\n");
 		goto out_cache;
@@ -522,7 +527,7 @@ out:
 	return cache;
 }
 
-int destroy_lru_cache(struct lru_cache *cache)
+int lru_cache_destroy(struct lru_cache *cache)
 {
 	int ret = 0;
 
@@ -563,7 +568,9 @@ int main(int argc, char *argv[])
 	}
 
 	while(1) {
-		printf("\n\nEnter option \n1: insert element, \n2: address lookup/insert if missing, \n3: address lookup, \n4: dump list, \n5: quit\n");
+		printf("\n\nEnter option \n1: insert element, \n2: address"
+				"lookup/insert if missing, \n3: address lookup,"
+				"\n4: dump list, \n5: quit\n");
 		scanf("%d", &option);
 
 		switch(option) {
@@ -583,7 +590,8 @@ int main(int argc, char *argv[])
 			scanf("%" PRIu64, &addr);
 			node = lru_cache_lookup(cache, addr);
 			if (!node) {
-				printf("\nNode not found. Enter data to store at addr %" PRIu64 ": ", addr);
+				printf("\nNode not found. Enter data to store \
+						at addr %" PRIu64 ": ", addr);
 				fgets(buf, 128, stdin);
 				ret = lru_cache_insert(cache, addr, (void *)buf, strlen(buf));
 				if (ret) {
@@ -617,7 +625,7 @@ int main(int argc, char *argv[])
 
 out:
 	if (cache) {
-		destroy_lru_cache(cache);
+		lru_cache_destroy(cache);
 		cache = NULL;
 	}
 	return ret;

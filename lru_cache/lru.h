@@ -33,9 +33,8 @@ struct lru_cache {
 	struct lru_hash **hashtable;
 };
 
-#if 0
-int insert_new_lru_node(struct lru_list **head, void *data, size_t size);
-int move_lru_node(struct lru_list **head, struct lru_list **node);
-int delete_lru_node(struct lru_list **head);
-int iterate_lru_list(struct lru_list *head);
-#endif
+struct lru_cache * lru_cache_initialize(int max_queue_size, int max_ht_buckets);
+int lru_cache_destroy(struct lru_cache *cache);
+struct lru_list * lru_cache_lookup(struct lru_cache *cache, uint64_t addr);
+int lru_cache_insert(struct lru_cache *cache, uint64_t addr, void *data, int size);
+
