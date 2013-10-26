@@ -1,0 +1,7 @@
+This has only been tested for a single producer, single consumer scenario. This
+will not work for multiple producers and consumers.
+
+TODO: Get it to work for multiple consumers.
+
+Note: Test program written by Sagar, I've only modified it slightly. The polling
+part is also Sagar's. I had implemented it with locks and condition variables.
