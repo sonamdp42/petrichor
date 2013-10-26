@@ -1,0 +1,9 @@
+- Malloc Implementation (suggestion by Sagar: Just mmap a large amount of memory
+  rather than using brk(), I say explore both options).
+
+- Kernel style linked-lists (suggestion by Sagar: look up how they implement
+  containers, etc).
+
+- Page cache implementation.
+
+- Implement a file system (need to explore whether FUSE or VFS based).
