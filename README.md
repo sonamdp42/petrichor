@@ -5,3 +5,4 @@ directory.
 Currently existing code:
 
 1) LRU Cache
+2) Lock Free Queue (used in smackd)
