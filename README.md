@@ -6,3 +6,4 @@ Currently existing code:
 
 1) LRU Cache
 2) Lock Free Queue (used in smackd)
+2) Hash Table for generic data types (used in smackd)
