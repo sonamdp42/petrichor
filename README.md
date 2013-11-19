@@ -6,4 +6,6 @@ Currently existing code:
 
 1) LRU Cache
 2) Lock Free Queue (used in smackd)
-2) Hash Table for generic data types (used in smackd)
+3) Hash Table for generic data types (used in smackd)
+4) Memory Allocator (malloc style, assignment from:
+   http://web.eecs.utk.edu/~huangj/cs360/360/notes/Malloc2/lecture.html)
